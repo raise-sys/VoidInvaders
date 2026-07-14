@@ -1,5 +1,5 @@
 window.voidInvaders = (() => {
-    let canvas, ctx, frame, last = 0, audio;
+    let canvas, ctx, frame, last = 0, audio, autoFire = false, fireHoldTimer;
     const W = 720, H = 800;
     const keys = { left: false, right: false, fire: false };
     const stars = Array.from({ length: 80 }, (_, i) => ({ x: (i * 89) % W, y: (i * 137) % H, a: .12 + (i % 5) * .05 }));
@@ -58,7 +58,7 @@ window.voidInvaders = (() => {
         if (keys.left) p.x -= 270 * dt;
         if (keys.right) p.x += 270 * dt;
         p.x = Math.max(30, Math.min(W - 30 - p.w, p.x));
-        if (keys.fire && p.cooldown <= 0 && game.shots.length < 2) {
+        if ((keys.fire || autoFire) && p.cooldown <= 0 && game.shots.length < 2) {
             game.shots.push({ x: p.x + p.w / 2 - 2, y: p.y - 10, w: 4, h: 14 });
             p.cooldown = .32; beep(620, .045, 'square', .035);
         }
@@ -227,16 +227,18 @@ window.voidInvaders = (() => {
         if(down&&e.code==='KeyP'&&(game.state==='playing'||game.state==='paused'))game.state=game.state==='paused'?'playing':'paused';
     }
     const kd=e=>onKey(e,true), ku=e=>onKey(e,false), blur=()=>{keys.left=keys.right=keys.fire=false;};
-    function bindHold(id,key){const el=document.getElementById(id);if(!el)return;const on=e=>{e.preventDefault();unlockAudio();keys[key]=true;el.classList.add('active');if(key==='fire'&&game.state!=='playing')start();};const off=e=>{e.preventDefault();keys[key]=false;el.classList.remove('active');};el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off);}
+    function bindHold(id,key){const el=document.getElementById(id);if(!el)return;const on=e=>{e.preventDefault();unlockAudio();keys[key]=true;el.classList.add('active');};const off=e=>{e.preventDefault();keys[key]=false;el.classList.remove('active');};el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off);}
+    function updateFireButton(){const el=document.getElementById('fireButton'),label=document.getElementById('fireButtonLabel'),mode=document.getElementById('fireModeLabel');if(!el)return;el.classList.toggle('auto',autoFire);el.setAttribute('aria-pressed',String(autoFire));if(label)label.textContent=autoFire?'AUTO':'FIRE';if(mode)mode.textContent=autoFire?'AUTO ON':'HOLD: AUTO';}
+    function bindFire(){const el=document.getElementById('fireButton');if(!el)return;const on=e=>{e.preventDefault();unlockAudio();keys.fire=true;el.classList.add('active');if(game.state!=='playing')start();clearTimeout(fireHoldTimer);fireHoldTimer=setTimeout(()=>{autoFire=!autoFire;keys.fire=false;updateFireButton();beep(autoFire?880:220,.1,'square',.04);},700);};const off=e=>{e.preventDefault();clearTimeout(fireHoldTimer);keys.fire=false;el.classList.remove('active');};el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off);updateFireButton();}
 
     return {
         init(id){
             canvas=document.getElementById(id);if(!canvas)return;ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;resetGame();
             window.addEventListener('keydown',kd,{passive:false});window.addEventListener('keyup',ku,{passive:false});window.addEventListener('blur',blur);
             canvas.addEventListener('pointerdown',()=>{unlockAudio();if(game.state!=='playing')start();});
-            bindHold('moveLeft','left');bindHold('moveRight','right');bindHold('fireButton','fire');
+            bindHold('moveLeft','left');bindHold('moveRight','right');bindFire();
             last=performance.now();frame=requestAnimationFrame(loop);
         },
-        dispose(){cancelAnimationFrame(frame);window.removeEventListener('keydown',kd);window.removeEventListener('keyup',ku);window.removeEventListener('blur',blur);if(audio){audio.close();audio=null;}canvas=null;ctx=null;}
+        dispose(){cancelAnimationFrame(frame);clearTimeout(fireHoldTimer);window.removeEventListener('keydown',kd);window.removeEventListener('keyup',ku);window.removeEventListener('blur',blur);if(audio){audio.close();audio=null;}canvas=null;ctx=null;}
     };
 })();

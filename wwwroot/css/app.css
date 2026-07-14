@@ -52,9 +52,12 @@ button { font: inherit; }
 .fire-button span { font-weight: bold; letter-spacing: .12em; }
 .fire-button small { color: #5d101d; font-size: 8px; margin-top: 3px; }
 .fire-button:active, .fire-button.active { transform: translateY(4px); box-shadow: 0 1px 0 #671626, 0 5px 12px #000; }
-.instructions { margin-top: 22px; text-align: center; color: #647169; font-size: 11px; letter-spacing: .08em; }
+.fire-button.auto { background: radial-gradient(circle at 40% 30%, #a5ffb9, #2e9c50 68%); box-shadow: 0 5px 0 #17582c, 0 0 24px rgba(120,255,150,.25); }
+.fire-button.auto small { color: #123e20; }
+.instructions { margin: -4px 0 14px; text-align: center; color: #647169; font-size: 11px; letter-spacing: .08em; }
 .instructions p { margin: 6px 0; }.instructions span { color: #b0c6b7; }
-.instructions .credit { color: #323d37; font-size: 9px; letter-spacing: .18em; }
+.game-footer { margin-top: 22px; text-align: center; }
+.game-footer .credit { margin: 6px 0; color: #323d37; font-size: 9px; letter-spacing: .18em; }
 
 #blazor-error-ui { display: none; }
 .loading-progress { display: block; margin: 40vh auto 0; }
@@ -76,5 +79,5 @@ button { font: inherit; }
     .game-header { margin-bottom: 10px; }
     .screen-bezel { width: 510px; }
     .control-deck { margin-top: 12px; }
-    .instructions { margin-top: 14px; }
+    .instructions { margin-bottom: 8px; }
 }

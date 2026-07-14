@@ -56,8 +56,7 @@ button { font: inherit; }
 .fire-button.auto small { color: #123e20; }
 .instructions { margin: -4px 0 14px; text-align: center; color: #647169; font-size: 11px; letter-spacing: .08em; }
 .instructions p { margin: 6px 0; }.instructions span { color: #b0c6b7; }
-.game-footer { margin-top: 22px; text-align: center; }
-.game-footer .credit { margin: 6px 0; color: #323d37; font-size: 9px; letter-spacing: .18em; }
+.instructions .credit { color: #404d46; font-size: 9px; letter-spacing: .18em; }
 
 #blazor-error-ui { display: none; }
 .loading-progress { display: block; margin: 40vh auto 0; }

@@ -1,0 +1,63 @@
+@page "/"
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<PageTitle>VOID INVADERS</PageTitle>
+
+<main class="arcade-shell">
+    <header class="game-header">
+        <div class="brand-lockup">
+            <span class="eyebrow">ARCADE ARCHIVES // 1978</span>
+            <h1>VOID <span>INVADERS</span></h1>
+        </div>
+        <div class="status-pill"><i></i> SYSTEM ONLINE</div>
+    </header>
+
+    <section class="cabinet" aria-label="Void Invaders game">
+        <div class="cabinet-screw top-left"></div>
+        <div class="cabinet-screw top-right"></div>
+        <div class="screen-bezel">
+            <div class="screen-wrap">
+                <canvas id="gameCanvas" width="720" height="800" tabindex="0"
+                        aria-label="スペースインベーダーゲーム画面"></canvas>
+                <div class="crt-glass"></div>
+            </div>
+        </div>
+        <div class="cabinet-label">
+            <span>ONE PLAYER</span><b>◈</b><span>MISSION 01</span>
+        </div>
+    </section>
+
+    <section class="control-deck" aria-label="ゲーム操作">
+        <button id="moveLeft" class="control-button move" aria-label="左へ移動">
+            <span class="keycap">←</span><small>MOVE</small>
+        </button>
+        <button id="fireButton" class="fire-button" aria-label="発射">
+            <span>FIRE</span><small>SPACE</small>
+        </button>
+        <button id="moveRight" class="control-button move" aria-label="右へ移動">
+            <span class="keycap">→</span><small>MOVE</small>
+        </button>
+    </section>
+
+    <footer class="instructions">
+        <p><span>← →</span> または <span>A D</span> で移動　<span>SPACE</span> で射撃　<span>P</span> でポーズ</p>
+        <p class="credit">© 2026 REISOFT // INSERT COURAGE</p>
+    </footer>
+</main>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("voidInvaders.init", "gameCanvas");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try { await JS.InvokeVoidAsync("voidInvaders.dispose"); }
+        catch (JSDisconnectedException) { }
+    }
+}

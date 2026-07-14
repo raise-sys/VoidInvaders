@@ -28,11 +28,10 @@ try {
         Remove-Item $publishRoot -Recurse -Force
     }
     Invoke-CheckedCommand dotnet -Arguments @(
-        "build",
+        "publish",
         (Join-Path $projectRoot "SpaceInvader.csproj"),
         "-c", "Release",
-        "-t:Publish",
-        "-p:PublishDir=$publishRoot\"
+        "-o", $publishRoot
     )
 
     $indexPath = Join-Path $siteRoot "index.html"
